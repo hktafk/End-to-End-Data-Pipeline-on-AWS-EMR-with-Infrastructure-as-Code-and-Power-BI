@@ -10,6 +10,8 @@ Chúng ta có một bộ dữ liệu ở đây mà chúng ta sẽ sử dụng đ
 
 ![AWS CLI](/images/DataDescription.png?width=90pc)
 
+[Link để lấy data](https://github.com/hktafk/End-to-End-Data-Pipeline-on-AWS-EMR-with-Infrastructure-as-Code-AWS-CDK-and-Power-BI/blob/main/emr_pipeline/data/sales_data_raw/sales_data.csv)
+
 {{% notice note %}}
 Nhưng có điều gì đó quan trọng cần xem xét. Cả `order_date` và `ship date`, bạn sẽ nhận thấy dữ liệu có thể bị hỏng một chút (ví dụ: 10/18/2014, 11-07-2021). Chúng ta sẽ thực hiện chuyển đổi sau để sửa điều này.
 {{% /notice %}}

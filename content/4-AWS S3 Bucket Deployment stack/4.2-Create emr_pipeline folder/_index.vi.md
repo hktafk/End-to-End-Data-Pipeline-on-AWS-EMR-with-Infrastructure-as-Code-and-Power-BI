@@ -29,6 +29,6 @@ code data/sales_data_raw/sales_data.csv
 ````
 
 #### Dán các giá trị của file này
-[Đây là liên kết github](https://github.com/Prashant501Tyagi/-Build-an-ETL-Pipeline-on-EMR-using-AWS-CDK-and-Power-BI/blob/Main/emr_pipeline/data/sales_data_raw/sales_data.csv?plain=1)
+[Link để lấy data](https://github.com/hktafk/End-to-End-Data-Pipeline-on-AWS-EMR-with-Infrastructure-as-Code-AWS-CDK-and-Power-BI/blob/main/emr_pipeline/data/sales_data_raw/sales_data.csv)
 
 ![S3](/images/3.AWS%20S3%20Bucket%20Deployment%20stack/AWS%20S3-3.png)

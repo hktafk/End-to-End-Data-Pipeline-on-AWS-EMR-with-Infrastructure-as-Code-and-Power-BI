@@ -10,6 +10,8 @@ We have a dataset here that we going to be using to analyze . This is a genetic 
 
 ![AWS CLI](/images/DataDescription.png?width=90pc)
 
+[Link to the data](https://github.com/hktafk/End-to-End-Data-Pipeline-on-AWS-EMR-with-Infrastructure-as-Code-AWS-CDK-and-Power-BI/blob/main/emr_pipeline/data/sales_data_raw/sales_data.csv)
+
 {{% notice note %}}
 But there is something critical to consider. Both `order_date` and `ship date`, you’ll notice the data would be a little bit corrupted (eg. 10/18/2014, 11-07-2021). We’ll do transformation later to fix this.
 {{% /notice %}}
