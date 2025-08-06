@@ -1,83 +1,26 @@
-+++
-title = "Dọn dẹp tài nguyên  "
-date = 2021
-weight = 6
-chapter = false
-pre = "<b>6. </b>"
-+++
+---
+title : "AWS Elastic Mapreduce"
+date :  "`r Sys.Date()`" 
+weight : 6 
+chapter : false
+pre : " <b> 6. </b> "
+---
+#### AWS Elastic Mapreduce (EMR)
 
-Chúng ta sẽ tiến hành các bước sau để xóa các tài nguyên chúng ta đã tạo trong bài thực hành này.
+AWS EMR là một framework phân tán sẽ xử lý big data, giống như các công cụ big data khác như Apache Hive, Hadoop, Spark….
 
-#### Xóa EC2 instance
+Bạn có thể đọc thêm về điều đó [TẠI ĐÂY](https://www.bing.com/search?pglt=929&q=AWS+Elastic+Mapreduce+(EMR)&gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIGCAEQRRhA0gEHODE1ajBqMagCALACAA&PC=WSEDSE). Nói ngắn gọn, đây là một công cụ có thể chứa nhiều **cluster**, một **cluster** có thể chứa nhiều node hoặc đơn vị tính toán, và mỗi node có thể xử lý một phần dữ liệu rồi tập hợp lại để tạo ra kết quả. Với loại framework này, chúng ta có thể xử lý **BIG DATA** (như hàng trăm Terabyte).
 
-1. Truy cập [giao diện quản trị dịch vụ EC2](https://console.aws.amazon.com/ec2/v2/home)
-  + Click **Instances**.
-  + Click chọn cả 2 instance **Public Linux Instance** và **Private Windows Instance**. 
-  + Click **Instance state**.
-  + Click **Terminate instance**, sau đó click **Terminate** để xác nhận.
+AWS EMR được sử dụng trong nhiều tác vụ big data:
++ thu thập dữ liệu
++ xử lý dữ liệu
++ chuyển đổi dữ liệu 
++ phân tích dữ liệu
++ machine learning 
++ Spark streaming (dữ liệu thời gian thực)
 
-2. Truy cập [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home#/home)
-  + Click **Roles**.
-  + Tại ô tìm kiếm , điền **SSM**.
-  + Click chọn **SSM-Role**.
-  + Click **Delete**, sau đó điền tên role **SSM-Role** và click **Delete** để xóa role.
-  
-![Clean](/images/6.clean/001-clean.png)
 
-3. Click **Users**.
-  + Click chọn user **Portfwd**.
-  + Click **Delete**, sau đó điền tên user **Portfwd** và click **Delete** để xóa user.
-
-#### Xóa S3 bucket
-
-1. Truy cập [giao diện quản trị dịch vụ System Manager - Session Manager](https://console.aws.amazon.com/systems-manager/session-manager).
-  + Click tab **Preferences**.
-  + Click **Edit**.
-  + Kéo chuột xuống dưới.
-  + Tại mục **S3 logging**.
-  + Bỏ chọn **Enable** để tắt tính năng logging.
-  + Kéo chuột xuống dưới.
-  + Click **Save**.
-
-2. Truy cập [giao diện quản trị dịch vụ S3](https://s3.console.aws.amazon.com/s3/home)
-  + Click chọn S3 bucket chúng ta đã tạo cho bài thực hành. ( Ví dụ : lab-fcj-bucket-0001 )
-  + Click **Empty**.
-  + Điền **permanently delete**, sau đó click **Empty** để tiến hành xóa object trong bucket.
-  + Click **Exit**.
-
-3. Sau khi xóa hết object trong bucket, click **Delete**
-
-![Clean](/images/6.clean/002-clean.png)
-
-4. Điền tên S3 bucket, sau đó click **Delete bucket** để tiến hành xóa S3 bucket.
-
-![Clean](/images/6.clean/003-clean.png)
-
-#### Xóa các VPC Endpoint
-
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Endpoints**.
-  + Chọn 4 endpoints chúng ta đã tạo cho bài thực hành bao gồm **SSM**, **SSMMESSAGES**, **EC2MESSAGES**, **S3GW**.
-  + Click **Actions**.
-  + Click **Delete VPC endpoints**.
-
-![Clean](/images/6.clean/004-clean.png)
-
-2. Tại ô confirm , điền **delete**.
-  + Click **Delete** để tiến hành xóa các endpoints.
-
-3. Click biểu tượng refresh, kiểm tra tất cả các endpoints đã bị xóa trước khi làm bước tiếp theo.
-
-![Clean](/images/6.clean/005-clean.png)
-
-#### Xóa VPC
-
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Your VPCs**.
-  + Click chọn **Lab VPC**.
-  + Click **Actions**.
-  + Click **Delete VPC**.
-
-2. Tại ô confirm, điền **delete** để xác nhận, click **Delete** để thực hiện xóa **Lab VPC** và các tài nguyên liên quan.
-
-![Clean](/images/6.clean/006-clean.png)
+- AWS EMR cũng có khả năng mở rộng cao (dễ dàng thêm hoặc xóa node khỏi cluster)
+- Các tính năng bảo mật đa dạng, chẳng hạn như mã hóa dữ liệu trong quá trình truyền tải và lưu trữ, và kiểm soát truy cập chi tiết.
+- EMR có thể tích hợp với các dịch vụ AWS khác, và có thể dễ dàng sử dụng kết hợp với các dịch vụ big data AWS khác, chẳng hạn như Amazon Redshift và Amazon Athena.
+- EMR cũng cung cấp các công cụ quản lý và giám sát khác nhau, chẳng hạn như Amazon CloudWatch, AWS CloudTrail và AWS Management Console, để giúp người dùng quản lý và giám sát quy trình làm việc big data của họ.

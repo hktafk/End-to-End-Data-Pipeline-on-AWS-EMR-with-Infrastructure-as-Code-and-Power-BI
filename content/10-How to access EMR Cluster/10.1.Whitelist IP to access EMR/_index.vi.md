@@ -1,83 +1,66 @@
-+++
-title = "Dọn dẹp tài nguyên  "
-date = 2021
-weight = 6
-chapter = false
-pre = "<b>6. </b>"
-+++
+---
+title : "Whitelist IP để truy cập EMR"
+date :  "`r Sys.Date()`" 
+weight : 1
+chapter : false
+pre : " <b> 10.1 </b> "
+---
+Tiếp theo bạn sẽ cần whitelist IP của mình để có thể truy cập EMR.
 
-Chúng ta sẽ tiến hành các bước sau để xóa các tài nguyên chúng ta đã tạo trong bài thực hành này.
+Đầu tiên hãy mở EC2 security group và nhấp vào Primary node
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR1.png)
 
-#### Xóa EC2 instance
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR2.png)
 
-1. Truy cập [giao diện quản trị dịch vụ EC2](https://console.aws.amazon.com/ec2/v2/home)
-  + Click **Instances**.
-  + Click chọn cả 2 instance **Public Linux Instance** và **Private Windows Instance**. 
-  + Click **Instance state**.
-  + Click **Terminate instance**, sau đó click **Terminate** để xác nhận.
+Cuộn xuống và thêm rule
 
-2. Truy cập [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home#/home)
-  + Click **Roles**.
-  + Tại ô tìm kiếm , điền **SSM**.
-  + Click chọn **SSM-Role**.
-  + Click **Delete**, sau đó điền tên role **SSM-Role** và click **Delete** để xóa role.
-  
-![Clean](/images/6.clean/001-clean.png)
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR3.png)
 
-3. Click **Users**.
-  + Click chọn user **Portfwd**.
-  + Click **Delete**, sau đó điền tên user **Portfwd** và click **Delete** để xóa user.
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR4.png)
 
-#### Xóa S3 bucket
+SSH -> My IP -> Save rule
 
-1. Truy cập [giao diện quản trị dịch vụ System Manager - Session Manager](https://console.aws.amazon.com/systems-manager/session-manager).
-  + Click tab **Preferences**.
-  + Click **Edit**.
-  + Kéo chuột xuống dưới.
-  + Tại mục **S3 logging**.
-  + Bỏ chọn **Enable** để tắt tính năng logging.
-  + Kéo chuột xuống dưới.
-  + Click **Save**.
+Bây giờ thử:
+````
+aws emr ssh --key-pair-file ~/ProjectProAlexClark.pem --cluster-id j-3SV9H2OBTRTDT
+````
 
-2. Truy cập [giao diện quản trị dịch vụ S3](https://s3.console.aws.amazon.com/s3/home)
-  + Click chọn S3 bucket chúng ta đã tạo cho bài thực hành. ( Ví dụ : lab-fcj-bucket-0001 )
-  + Click **Empty**.
-  + Điền **permanently delete**, sau đó click **Empty** để tiến hành xóa object trong bucket.
-  + Click **Exit**.
+{{% notice warning %}}
+Bạn sẽ phải thay đổi `ProjectProAlexClark.pem` và `j-3SV9H2OBTRTDT`
+{{% /notice %}}
 
-3. Sau khi xóa hết object trong bucket, click **Delete**
+{{% notice note %}}
+Bạn sẽ phải tìm thư mục home của mình và đặt ProjectProAlexClark (file keypair của bạn) ở đó.
+{{% /notice %}}
 
-![Clean](/images/6.clean/002-clean.png)
+{{% notice note %}}
+Hoặc tìm nơi ProjectProAlexClark (file keypair của bạn) ở đâu và chạy lệnh như thế này:
+````
+aws emr ssh --key-pair-file "C:\Users\your\key\pair\directory\ProjectProAlexClark.pem" --cluster-id [your EMR cluster id]
+````
+{{% /notice %}}
 
-4. Điền tên S3 bucket, sau đó click **Delete bucket** để tiến hành xóa S3 bucket.
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR5.png)
 
-![Clean](/images/6.clean/003-clean.png)
+Cập nhật package:
+````
+sudo yum update
+````
 
-#### Xóa các VPC Endpoint
+Sau đó mở hive
+````
+hive
+````
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR6.png)
 
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Endpoints**.
-  + Chọn 4 endpoints chúng ta đã tạo cho bài thực hành bao gồm **SSM**, **SSMMESSAGES**, **EC2MESSAGES**, **S3GW**.
-  + Click **Actions**.
-  + Click **Delete VPC endpoints**.
+Với EMR mở, chúng ta có thể bắt đầu xem các bảng:
+````
+show tables;
+````
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR7.png?width=40pc)
 
-![Clean](/images/6.clean/004-clean.png)
-
-2. Tại ô confirm , điền **delete**.
-  + Click **Delete** để tiến hành xóa các endpoints.
-
-3. Click biểu tượng refresh, kiểm tra tất cả các endpoints đã bị xóa trước khi làm bước tiếp theo.
-
-![Clean](/images/6.clean/005-clean.png)
-
-#### Xóa VPC
-
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Your VPCs**.
-  + Click chọn **Lab VPC**.
-  + Click **Actions**.
-  + Click **Delete VPC**.
-
-2. Tại ô confirm, điền **delete** để xác nhận, click **Delete** để thực hiện xóa **Lab VPC** và các tài nguyên liên quan.
-
-![Clean](/images/6.clean/006-clean.png)
+Xem giá trị bảng:
+````
+select * from sales_data_raw limit 10;
+````
+![Whitelist IP to access EMR](/images/10.How_to_access_EMR_Cluster/10.1.Whitelist_IP_to_access_EMR/10.1.Whitelist%20IP%20to%20access%20EMR8.png)

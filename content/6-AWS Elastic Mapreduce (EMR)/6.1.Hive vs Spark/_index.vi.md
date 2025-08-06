@@ -1,34 +1,16 @@
 ---
-title : "Cập nhật IAM Role"
-date :  "`r Sys.Date()`" 
-weight : 1 
+title : "Hive vs Spark"
+date : "`r Sys.Date()`"
+weight : 1
 chapter : false
-pre : " <b> 4.1 </b> "
+pre : " <b> 6.1 </b> "
 ---
+#### Hive vs Spark
+2 công cụ được sử dụng nhiều nhất hiện nay để xử lý big data là hive và spark, nhưng spark gần đây ngày càng phổ biến hơn, vượt trội hive trong nhiều trường hợp (ví dụ: Tốc độ).
 
-Để các EC2 instance của chúng ta có thể gửi session log tới S3 bucket , chúng ta sẽ cần cập nhật IAM Role đã gán vào EC2 instance bằng cách thêm vào policy cho phép quyền truy cập vào S3.
-
-#### Cập nhật IAM Role
-
-1. Truy cập vào [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home?#/home)
-  + Click **Roles**.
-  + Tại ô tìm kiếm , điền **SSM**.
-  + Click vào role **SSM-Role**.
-
-![S3](/images/4.s3/002-s3.png)
-
-2. Click **Attach policies**.
- 
-![S3](/images/4.s3/003-s3.png)
-
-3. Tại ô Search điền **S3**.
-  + Click chọn policy **AmazonS3FullAccess**.
-  + Click **Attach policy**.
- 
-![S3](/images/4.s3/004-s3.png)
- 
-{{%notice tip%}}
-Trong thực tế chúng ta sẽ cấp quyền chặt chẽ hơn tới S3 bucket chỉ định. Trong khuôn khổ bài lab này chúng ta sử dụng policy **AmazonS3FullAccess** cho tiện dụng.
-{{%/notice%}}
-
-Tiếp theo chúng ta sẽ tiến hành tạo S3 bucket để lưu trữ session logs.
+| Spark                                                                                                             | Hive                                                                        |
+|-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| Hệ thống kho dữ liệu để truy vấn và phân tích các bộ dữ liệu lớn được lưu trữ trong Hadoop Distributed File System (HDFS) | Spark, mặt khác, là một engine xử lý big data nhanh và linh hoạt |
+| Được thiết kế cho xử lý batch và được tối ưu hóa cho các truy vấn chạy lâu trên các bộ dữ liệu lớn.                     | Khối lượng công việc xử lý batch và thời gian thực.                                   |
+| Rất ổn định                                                                                                       | Đường cong học tập dốc hơn, đặc biệt là từ SQL                          |
+| Dễ học hơn vì Hive Query Language (HQL) rất giống với SQL                                            | Hỗ trợ đa ngôn ngữ bao gồm Python, Scala, Java                        |

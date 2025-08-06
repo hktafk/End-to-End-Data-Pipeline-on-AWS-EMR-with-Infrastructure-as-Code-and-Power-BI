@@ -1,83 +1,62 @@
-+++
-title = "Dọn dẹp tài nguyên  "
-date = 2021
-weight = 6
-chapter = false
-pre = "<b>6. </b>"
-+++
+---
+title : "Tải PUTTY để SSH kết nối tới EMR Cluster"
+date :  "`r Sys.Date()`" 
+weight : 11
+chapter : false
+pre : " <b> 11. </b> "
+---
+Theo liên kết này:
+[PUTTY](https://www.putty.org/)
 
-Chúng ta sẽ tiến hành các bước sau để xóa các tài nguyên chúng ta đã tạo trong bài thực hành này.
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.1.Downloading_PUTTY/Downloading%20PUTTY1.png?width=40pc)
 
-#### Xóa EC2 instance
+Vậy Putty sẽ giúp chúng ta SSH trực tiếp vào EMR Cluster. 
 
-1. Truy cập [giao diện quản trị dịch vụ EC2](https://console.aws.amazon.com/ec2/v2/home)
-  + Click **Instances**.
-  + Click chọn cả 2 instance **Public Linux Instance** và **Private Windows Instance**. 
-  + Click **Instance state**.
-  + Click **Terminate instance**, sau đó click **Terminate** để xác nhận.
+Chúng ta cũng chuyển đổi file pem thành file ppk.
 
-2. Truy cập [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home#/home)
-  + Click **Roles**.
-  + Tại ô tìm kiếm , điền **SSM**.
-  + Click chọn **SSM-Role**.
-  + Click **Delete**, sau đó điền tên role **SSM-Role** và click **Delete** để xóa role.
-  
-![Clean](/images/6.clean/001-clean.png)
+Mở thanh tìm kiếm và gõ: PUTTY gen.
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.2.Configuring_PUTTY/Configuring%20PUTTY1.png?width=40pc)
 
-3. Click **Users**.
-  + Click chọn user **Portfwd**.
-  + Click **Delete**, sau đó điền tên user **Portfwd** và click **Delete** để xóa user.
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.2.Configuring_PUTTY/Configuring%20PUTTY2.png?width=40pc)
+Conversions -> Import key
 
-#### Xóa S3 bucket
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.2.Configuring_PUTTY/Configuring%20PUTTY3.png?width=40pc)
 
-1. Truy cập [giao diện quản trị dịch vụ System Manager - Session Manager](https://console.aws.amazon.com/systems-manager/session-manager).
-  + Click tab **Preferences**.
-  + Click **Edit**.
-  + Kéo chuột xuống dưới.
-  + Tại mục **S3 logging**.
-  + Bỏ chọn **Enable** để tắt tính năng logging.
-  + Kéo chuột xuống dưới.
-  + Click **Save**.
+Chọn file .pem
 
-2. Truy cập [giao diện quản trị dịch vụ S3](https://s3.console.aws.amazon.com/s3/home)
-  + Click chọn S3 bucket chúng ta đã tạo cho bài thực hành. ( Ví dụ : lab-fcj-bucket-0001 )
-  + Click **Empty**.
-  + Điền **permanently delete**, sau đó click **Empty** để tiến hành xóa object trong bucket.
-  + Click **Exit**.
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.2.Configuring_PUTTY/Configuring%20PUTTY4.png?width=40pc)
 
-3. Sau khi xóa hết object trong bucket, click **Delete**
+Lưu private key
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.2.Configuring_PUTTY/Configuring%20PUTTY5.png?width=40pc)
 
-![Clean](/images/6.clean/002-clean.png)
+Mở thanh tìm kiếm và gõ: PUTTY
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster1.png?width=40pc)
 
-4. Điền tên S3 bucket, sau đó click **Delete bucket** để tiến hành xóa S3 bucket.
+Trong AWS console, tìm public DNS
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster2.png?width=40pc)
 
-![Clean](/images/6.clean/003-clean.png)
+Dán vào PUTTY
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster3.png)
 
-#### Xóa các VPC Endpoint
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster4.png)
 
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Endpoints**.
-  + Chọn 4 endpoints chúng ta đã tạo cho bài thực hành bao gồm **SSM**, **SSMMESSAGES**, **EC2MESSAGES**, **S3GW**.
-  + Click **Actions**.
-  + Click **Delete VPC endpoints**.
+Sau đó trong Session, Lưu lại. Để bạn không mất tất cả thông tin
 
-![Clean](/images/6.clean/004-clean.png)
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster5.png)
 
-2. Tại ô confirm , điền **delete**.
-  + Click **Delete** để tiến hành xóa các endpoints.
+Sau đó chọn EMR và nhấp Open
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster6.png)
 
-3. Click biểu tượng refresh, kiểm tra tất cả các endpoints đã bị xóa trước khi làm bước tiếp theo.
+Sau đó nhấp Accept
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster7.png?width=40pc)
 
-![Clean](/images/6.clean/005-clean.png)
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster8.png?width=40pc)
 
-#### Xóa VPC
+Đăng nhập với: Hadoop
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster9.png?width=40pc)
 
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Your VPCs**.
-  + Click chọn **Lab VPC**.
-  + Click **Actions**.
-  + Click **Delete VPC**.
-
-2. Tại ô confirm, điền **delete** để xác nhận, click **Delete** để thực hiện xóa **Lab VPC** và các tài nguyên liên quan.
-
-![Clean](/images/6.clean/006-clean.png)
+Bây giờ bạn có thể kết nối hive
+````
+hive
+````
+![PUTTY](/images/11.PUTTY_for_SSH_to_connect_to_EMR_Cluster/11.3.Connect_PUTTY_to_EMR_Cluster/Connect%20PUTTY%20to%20EMR%20Cluster10.png?width=40pc)

@@ -1,83 +1,85 @@
-+++
-title = "Dọn dẹp tài nguyên  "
-date = 2021
-weight = 6
-chapter = false
-pre = "<b>6. </b>"
-+++
+---
+title : "AWS CDK – Application Entry Point"
+date :  "`r Sys.Date()`" 
+weight : 8 
+chapter : false
+pre : " <b> 8. </b> "
+---
+Đảm bảo app.py của bạn trông như thế này:
 
-Chúng ta sẽ tiến hành các bước sau để xóa các tài nguyên chúng ta đã tạo trong bài thực hành này.
+![CDK](/images/8.AWS_CDK–Application_Entry_Point/AWS_CDK–Application_Entry_Point1.png?width=40pc)
 
-#### Xóa EC2 instance
+Sau đó chúng ta sẽ code như thế này:
+````
+#!/usr/bin/env python3
+import os
 
-1. Truy cập [giao diện quản trị dịch vụ EC2](https://console.aws.amazon.com/ec2/v2/home)
-  + Click **Instances**.
-  + Click chọn cả 2 instance **Public Linux Instance** và **Private Windows Instance**. 
-  + Click **Instance state**.
-  + Click **Terminate instance**, sau đó click **Terminate** để xác nhận.
+import aws_cdk as cdk
+from aws_cdk import Tags
+from decouple import config
 
-2. Truy cập [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home#/home)
-  + Click **Roles**.
-  + Tại ô tìm kiếm , điền **SSM**.
-  + Click chọn **SSM-Role**.
-  + Click **Delete**, sau đó điền tên role **SSM-Role** và click **Delete** để xóa role.
-  
-![Clean](/images/6.clean/001-clean.png)
+from bucket_deployment_stack.bucket_deployment_stack import BucketDeploymentStack
+from emr_cluster_stack.emr_cluster_stack import EMRClusterStack
+from security_stack.security_stack import SecurityStack
 
-3. Click **Users**.
-  + Click chọn user **Portfwd**.
-  + Click **Delete**, sau đó điền tên user **Portfwd** và click **Delete** để xóa user.
+# Đặt biến global
+ID = config('id')
+PRIMARY_BUCKET = f"emr-pipeline-{ID}"
+LOG_BUCKET = f"emr-logs-{ID}"
+SCRIPT_LOCATION = f"{PRIMARY_BUCKET}/scripts/"
+VPC_NAME = f"emr-pipeline-vpc-{ID}"
 
-#### Xóa S3 bucket
+env_USA = cdk.Environment(account="707843606607", region="ap-southeast-1")  #Thay đổi cái này
+app = cdk.App()
 
-1. Truy cập [giao diện quản trị dịch vụ System Manager - Session Manager](https://console.aws.amazon.com/systems-manager/session-manager).
-  + Click tab **Preferences**.
-  + Click **Edit**.
-  + Kéo chuột xuống dưới.
-  + Tại mục **S3 logging**.
-  + Bỏ chọn **Enable** để tắt tính năng logging.
-  + Kéo chuột xuống dưới.
-  + Click **Save**.
+# Tạo Stacks
+security_stack = SecurityStack(
+    scope=app,
+    id="SecurityStack",
+    vpc_name=VPC_NAME,
+    env=env_USA
+)
 
-2. Truy cập [giao diện quản trị dịch vụ S3](https://s3.console.aws.amazon.com/s3/home)
-  + Click chọn S3 bucket chúng ta đã tạo cho bài thực hành. ( Ví dụ : lab-fcj-bucket-0001 )
-  + Click **Empty**.
-  + Điền **permanently delete**, sau đó click **Empty** để tiến hành xóa object trong bucket.
-  + Click **Exit**.
 
-3. Sau khi xóa hết object trong bucket, click **Delete**
+bucket_deployment_stack = BucketDeploymentStack(
+    scope=app,
+    construct_id=f"BucketDeploymentStack",
+    primary_bucket_name=PRIMARY_BUCKET,
+    log_bucket_name=LOG_BUCKET,
+    env=env_USA
+)
 
-![Clean](/images/6.clean/002-clean.png)
 
-4. Điền tên S3 bucket, sau đó click **Delete bucket** để tiến hành xóa S3 bucket.
+emr_cluster_stack = EMRClusterStack(
+    scope=app,
+    id=f"EMRClusterStack",
+    s3_log_bucket=LOG_BUCKET,
+    s3_script_bucket=PRIMARY_BUCKET,
+    vpc_name=f"SecurityStack/{VPC_NAME}",
+    env=env_USA
+)
 
-![Clean](/images/6.clean/003-clean.png)
 
-#### Xóa các VPC Endpoint
+# Thêm dependencies
+emr_cluster_stack.add_dependency(bucket_deployment_stack)
+emr_cluster_stack.add_dependency(security_stack)
 
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Endpoints**.
-  + Chọn 4 endpoints chúng ta đã tạo cho bài thực hành bao gồm **SSM**, **SSMMESSAGES**, **EC2MESSAGES**, **S3GW**.
-  + Click **Actions**.
-  + Click **Delete VPC endpoints**.
 
-![Clean](/images/6.clean/004-clean.png)
+# Thêm tags
+Tags.of(app).add("ProjectOwner", "hktafk")          #Thay đổi cái này
+Tags.of(app).add("Project", "EMR-ETL-Pipeline")     #Thay đổi cái này
 
-2. Tại ô confirm , điền **delete**.
-  + Click **Delete** để tiến hành xóa các endpoints.
+app.synth()
+````
 
-3. Click biểu tượng refresh, kiểm tra tất cả các endpoints đã bị xóa trước khi làm bước tiếp theo.
+{{% notice warning %}}
+Bạn sẽ phải thay đổi `account id` và `region`
+{{% /notice %}}
 
-![Clean](/images/6.clean/005-clean.png)
+{{% notice tip %}}
+account=["số tài khoản AWS của bạn"] 
+{{% /notice %}}
 
-#### Xóa VPC
-
-1. Truy cập vào [giao diện quản trị dịch vụ VPC](https://console.aws.amazon.com/vpc/home)
-  + Click **Your VPCs**.
-  + Click chọn **Lab VPC**.
-  + Click **Actions**.
-  + Click **Delete VPC**.
-
-2. Tại ô confirm, điền **delete** để xác nhận, click **Delete** để thực hiện xóa **Lab VPC** và các tài nguyên liên quan.
-
-![Clean](/images/6.clean/006-clean.png)
+{{% notice tip %}}
+Đây là best practice để có tags. Vì vậy hãy thay đổi tags `ProjectOwner` và `Project`.
+{{% /notice %}}

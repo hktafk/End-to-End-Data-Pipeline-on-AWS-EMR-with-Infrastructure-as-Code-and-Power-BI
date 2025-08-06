@@ -1,34 +1,34 @@
 ---
-title : "Cập nhật IAM Role"
-date :  "`r Sys.Date()`" 
-weight : 1 
+title : "Tạo thư mục emr_pipeline"
+date : "`r Sys.Date()`"
+weight : 2
 chapter : false
-pre : " <b> 4.1 </b> "
+pre : " <b> 4.2 </b> "
 ---
+Trong module này chúng ta sẽ tạo một thư mục có tên: "emr_pipeline" để lưu trữ scripts và dữ liệu thô
 
-Để các EC2 instance của chúng ta có thể gửi session log tới S3 bucket , chúng ta sẽ cần cập nhật IAM Role đã gán vào EC2 instance bằng cách thêm vào policy cho phép quyền truy cập vào S3.
+{{% notice tip %}}
+Đảm bảo bạn đang ở thư mục gốc của dự án:
+{{% /notice %}}
 
-#### Cập nhật IAM Role
+````
+mkdir emr_pipeline
+````
+![S3](/images/3.AWS%20S3%20Bucket%20Deployment%20stack/AWS%20S3-1.png)
 
-1. Truy cập vào [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home?#/home)
-  + Click **Roles**.
-  + Tại ô tìm kiếm , điền **SSM**.
-  + Click vào role **SSM-Role**.
+````
+cd .\emr_pipeline\
+mkdir data
+mkdir scripts
+````
+![S3](/images/3.AWS%20S3%20Bucket%20Deployment%20stack/AWS%20S3-2.png)
 
-![S3](/images/4.s3/002-s3.png)
+````
+mkdir data/sales_data_raw/
+code data/sales_data_raw/sales_data.csv
+````
 
-2. Click **Attach policies**.
- 
-![S3](/images/4.s3/003-s3.png)
+#### Dán các giá trị của file này
+[Đây là liên kết github](https://github.com/Prashant501Tyagi/-Build-an-ETL-Pipeline-on-EMR-using-AWS-CDK-and-Power-BI/blob/Main/emr_pipeline/data/sales_data_raw/sales_data.csv?plain=1)
 
-3. Tại ô Search điền **S3**.
-  + Click chọn policy **AmazonS3FullAccess**.
-  + Click **Attach policy**.
- 
-![S3](/images/4.s3/004-s3.png)
- 
-{{%notice tip%}}
-Trong thực tế chúng ta sẽ cấp quyền chặt chẽ hơn tới S3 bucket chỉ định. Trong khuôn khổ bài lab này chúng ta sử dụng policy **AmazonS3FullAccess** cho tiện dụng.
-{{%/notice%}}
-
-Tiếp theo chúng ta sẽ tiến hành tạo S3 bucket để lưu trữ session logs.
+![S3](/images/3.AWS%20S3%20Bucket%20Deployment%20stack/AWS%20S3-3.png)

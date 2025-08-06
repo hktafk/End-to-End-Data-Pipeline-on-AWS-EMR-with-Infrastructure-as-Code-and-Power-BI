@@ -1,93 +1,75 @@
 ---
-title : "Port Forwarding"
+title : "Security Stack"
 date :  "`r Sys.Date()`" 
 weight : 5 
 chapter : false
 pre : " <b> 5. </b> "
 ---
+#### Thiết lập security stack
+Stack này sẽ có tất cả các thành phần bảo mật cho dự án AWS CDK của chúng ta.
 
-{{% notice info %}}
-**Port Forwarding** là mốt cách thức hữu ích để chuyển hướng lưu lượng mạng từ 1 địa chỉ IP - Port này sang 1 địa chỉ IP - Port khác. Với **Port Forwarding** chúng ta có thể truy cập một EC2 instance nằm trong private subnet từ máy trạm của chúng ta.
-{{% /notice %}}
+Kiểm tra xem bạn có đang ở đúng thư mục không:
+````
+ls
+````
 
-Chúng ta sẽ cấu hình **Port Forwarding** cho kết nối RDP giữa máy của mình với **Private Windows Instance** nằm trong private subnet mà chúng ta đã tạo cho bài thực hành này.
+{{% notice tip %}}
+sử dụng ``cd ..`` nếu bạn muốn quay về thư mục trước 
+{{% /notice %}}   
 
-![port-fwd](/images/arc-04.png) 
+{{% notice tip %}}
+Đảm bảo rằng bạn đang ở cùng thư mục với `cdk.json`
+{{% /notice %}}   
 
+![Security Stack](/images/4.Security%20Stack/SecurityStack1.png?width=90pc)
 
+````
+mkdir security_stack
+code security_stack/security_stack.py
+````
 
-#### Tạo IAM User có quyền kết nối SSM
+Code cho security_stack.py:
+````
+from aws_cdk import aws_ec2 as ec2, Stack
+from constructs import Construct 
 
-1. Truy cập vào [giao diện quản trị dịch vụ IAM](https://console.aws.amazon.com/iamv2/home)
-  + Click **Users** , sau đó click **Add users**.
+class SecurityStack(Stack):
+    def __init__(
+            self,
+            scope: Construct,
+            id: str,
+            vpc_name: str,
+            **kwargs,
+    ) -> None:
+        super().__init__(scope, id, **kwargs)
 
-![FWD](/images/5.fwd/001-fwd.png)
+````
 
-2. Tại trang **Add user**.
-  + Tại mục **User name**, điền **Portfwd**.
-  + Click chọn **Access key - Programmatic access**.
-  + Click **Next: Permissions**.
-  
-![FWD](/images/5.fwd/002-fwd.png)
+- Chú ý "Stack" trong `SecurityStack(Stack)`. Điều đó có nghĩa là chúng ta định nghĩa một class tên là securityStack và chúng ta mở rộng nó với thư viện Stack (mà chúng ta đã import). Vậy class này kế thừa thuộc tính của class Stack.
+- `vpc_name: str` là tham số mà chúng ta sẽ sử dụng để tạo VPC sau này, đây sẽ là tên VPC mà chúng ta sẽ tạo. 
 
-3. Click **Attach existing policies directly**.
-  + Tại ô tìm kiếm , điền **ssm**.
-  + Click chọn **AmazonSSMFullAccess**.
-  + Click **Next: Tags**, click **Next: Reviews**.
-  + Click **Create user**.
+{{% notice note %}}
+`-> None` chỉ có nghĩa là function không trả về gì. Ví dụ: Nếu là `-> int` hoặc `-> str` thì nó sẽ trả về kiểu giá trị đó. Điều này là tùy chọn, chỉ là một ký hiệu để làm rõ.
+{{% /notice %}}  
 
-4. Lưu lại thông tin **Access key ID** và **Secret access key** để thực hiện cấu hình AWS CLI.
+#### Tạo VPC
+VPC là Virtual Private Cloud. Nó cung cấp rất nhiều bảo mật, vì vậy khi EMR Cluster chạy, nó sẽ chạy trong VPC này, và không có gì có thể truy cập nó, trừ khi bạn có quyền để làm như vậy (Chúng ta sẽ đi qua điều này sau)  
+````
+#Tạo VPC
+        vpc = ec2.Vpc(
+            self,
+            vpc_name,
+            nat_gateways=0,
+            subnet_configuration=[
+                ec2.SubnetConfiguration(
+                    name=vpc_name,
+                    subnet_type=ec2.SubnetType.PUBLIC,
+                )
+            ]
 
-#### Cài đặt và cấu hình AWS CLI và Session Manager Plugin 
-  
-Để thực hiện phần thực hành này, đảm bảo máy trạm của bạn đã cài [AWS CLI]() và [Session Manager Plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
+        )
 
-Bạn có thể tham khảo thêm bài thực hành về cài đặt và cấu hình AWS CLI [tại đây](https://000011.awsstudygroup.com/).
-
-{{%notice tip%}}
-Với Windows thì khi giải nén thư mục cài đặt **Session Manager Plugin** bạn hãy chạy file **install.bat** với quyền Administrator để thực hiện cài đặt.
-{{%/notice%}}
-
-#### Thực hiện Portforwarding 
-
-1. Chạy command dưới đây trong **Command Prompt** trên máy của bạn để cấu hình **Port Forwarding**.
-
-```
-  aws ssm start-session --target (your ID windows instance) --document-name AWS-StartPortForwardingSession --parameters portNumber="3389",localPortNumber="9999" --region (your region) 
-```
-{{%notice tip%}}
-
-Thông tin **Instance ID** của **Windows Private Instance** có thể tìm được khi bạn xem chi tiết máy chủ EC2 Windows Private Instance.
-
-{{%/notice%}}
-
-  + Câu lệnh ví dụ
-
-```
-C:\Windows\system32>aws ssm start-session --target i-06343d7377486760c --document-name AWS-StartPortForwardingSession --parameters portNumber="3389",localPortNumber="9999" --region ap-southeast-1
-```
-
-{{%notice warning%}}
-
-Nếu câu lệnh của bạn báo lỗi như dưới đây : \
-SessionManagerPlugin is not found. Please refer to SessionManager Documentation here: http://docs.aws.amazon.com/console/systems-manager/session-manager-plugin-not-found\
-Chứng tỏ bạn chưa cài Session Manager Plugin thành công. Bạn có thể cần khởi chạy lại **Command Prompt** sau khi cài **Session Manager Plugin**.
-
-{{%/notice%}}
-
-2. Kết nối tới **Private Windows Instance** bạn đã tạo bằng công cụ **Remote Desktop** trên máy trạm của bạn.
-  + Tại mục Computer: điền **localhost:9999**.
-
-
-![FWD](/images/5.fwd/003-fwd.png)
-
-
-3. Quay trở lại giao diện quản trị của dịch vụ System Manager - Session Manager.
-  + Click tab **Session history**.
-  + Chúng ta sẽ thấy các session logs với tên Document là **AWS-StartPortForwardingSession**.
-
-
-![FWD](/images/5.fwd/004-fwd.png)
-
-
-Chúc mừng bạn đã hoàn tất bài thực hành hướng dẫn cách sử dụng Session Manager để kết nối cũng như lưu trữ các session logs trong S3 bucket. Hãy nhớ thực hiện bước dọn dẹp tài nguyên để tránh sinh chi phí ngoài ý muốn nhé.
+````
+{{% notice note %}}
+Chúng ta phải thiết lập subnet_type và đặt thành `PUBLIC` nếu không chúng ta sẽ không thể truy cập từ internet.
+{{% /notice %}}  

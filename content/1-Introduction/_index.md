@@ -5,11 +5,11 @@ weight : 1
 chapter : false
 pre : " <b> 1. </b> "
 ---
-# End-to-End Data Pipeline on AWS EMR with Infrastructure as Code and Power BI
+### End-to-End Data Pipeline on AWS EMR with Infrastructure as Code and Power BI
 
-### Overall
+#### Overall
  In this lab, you will learn build an ETL Pipeline on Amazon EMR with AWS CDK and Apache Hive. You'll deploy the pipeline using S3, Visual Studio Code, and AWS EMR, and then use Power BI to create dynamic visualizations of your transformed data.
- 
+
 #### Project Architechture
 ![Architechture](/images/1.Setup/Setup0.png?)
 
