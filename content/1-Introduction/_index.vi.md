@@ -5,15 +5,15 @@ weight : 1
 chapter : false
 pre : " <b> 1. </b> "
 ---
-### Pipeline Dữ liệu End-to-End trên AWS EMR với Infrastructure as Code và Power BI
+### Quy trình hoàn chỉnh xây dựng Data Pipeline từ đầu đến cuối trên AWS EMR với AWS CDK, IaC và trực quan hóa bằng Power BI
 
 #### Tổng quan
- Trong bài thực hành này, bạn sẽ học cách xây dựng ETL Pipeline trên Amazon EMR với AWS CDK và Apache Hive. Bạn sẽ triển khai pipeline sử dụng S3, Visual Studio Code, và AWS EMR, sau đó sử dụng Power BI để tạo các biểu đồ trực quan động từ dữ liệu đã được chuyển đổi.
+ Trong bài thực hành này, bạn sẽ học cách xây dựng ETL Pipeline trên Amazon EMR với IaC (Infrastructure as code), AWS CDK và Apache Hive. Bạn sẽ triển khai pipeline sử dụng S3, Visual Studio Code, và AWS EMR, sau đó sử dụng Power BI để tạo các biểu đồ trực quan hóa dữ liệu từ dữ liệu đã được chuyển đổi.
 
 #### Kiến trúc Dự án
 ![Architechture](/images/1.Setup/Setup0.png?)
 
-#### Tổng quan Kinh doanh:
+#### Tổng quan về vấn đề doanh nghiệp:
  Infrastructure as Code (IaC) là một phương pháp tự động hóa việc cung cấp và quản lý hạ tầng CNTT bằng các kỹ thuật kỹ thuật phần mềm. Nó bao gồm việc tạo và duy trì hạ tầng thông qua mã thay vì cấu hình thủ công từng thành phần riêng lẻ.
 
 IaC thường được sử dụng trong môi trường điện toán đám mây, nơi nó cho phép các nhà phát triển và nhóm vận hành tự động hóa việc triển khai và quản lý tài nguyên, chẳng hạn như máy chủ, lưu trữ và mạng. Nó cho phép các tổ chức đạt được hạ tầng nhất quán, đáng tin cậy và có thể mở rộng hơn, có thể dễ dàng sao chép trên nhiều môi trường. IaC có thể được triển khai bằng các công cụ và nền tảng khác nhau, chẳng hạn như Terraform, AWS CloudFormation, Azure Resource Manager và Google Cloud Deployment Manager.
